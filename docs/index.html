@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AJS Builder Documentation</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --primary: #6b4eff;
+      --text: #111827;
+      --muted: #6b7280;
+      --bg: #f8f7ff;
+      --card-bg: #ffffff;
+      --border: #eef0f3;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
+      line-height: 1.75;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    header {
+      background: radial-gradient(
+        1200px 600px at 50% 0%,
+        #f3eefe 0%,
+        #f8f7ff 70%,
+        #f8f7ff 100%
+      );
+      border-bottom: 1px solid var(--border);
+      padding: 3rem 1.25rem 2rem;
+      text-align: center;
+    }
+    header h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+    header p {
+      max-width: 70ch;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.125rem);
+    }
+    .container {
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+      display: grid;
+      grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+      gap: clamp(1.5rem, 2vw, 2.5rem);
+    }
+    nav {
+      position: sticky;
+      top: 1.5rem;
+      align-self: start;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 1rem 0.75rem 1.25rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03),
+        0 20px 60px -28px rgba(107, 78, 255, 0.45);
+      max-height: calc(100vh - 3rem);
+      overflow: auto;
+    }
+    nav h2 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin: 0.5rem 0.5rem 0.25rem;
+    }
+    nav a {
+      display: block;
+      padding: 0.4rem 0.65rem;
+      border-radius: 0.6rem;
+      color: var(--text);
+      font-size: 0.98rem;
+      transition: background 120ms ease, color 120ms ease;
+    }
+    nav a:hover {
+      background: rgba(107, 78, 255, 0.08);
+      text-decoration: none;
+    }
+    nav a.active {
+      background: rgba(107, 78, 255, 0.12);
+      color: var(--primary);
+      font-weight: 600;
+    }
+    main {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(1.5rem, 2vw, 2.25rem);
+    }
+    section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 1.25rem;
+      padding: clamp(1.25rem, 2vw, 2rem);
+      box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02),
+        0 24px 60px -28px rgba(15, 23, 42, 0.25);
+      scroll-margin-top: 1.5rem;
+    }
+    section h2 {
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+    section h3 {
+      margin-top: clamp(1.25rem, 2vw, 1.75rem);
+      margin-bottom: 0.5rem;
+      font-size: clamp(1.125rem, 2vw, 1.375rem);
+    }
+    section p,
+    section li {
+      color: var(--text);
+      max-width: 80ch;
+    }
+    section ul,
+    section ol {
+      margin: 0.75rem 0 1rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    code,
+    pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+    }
+    code {
+      background: #f5f3ff;
+      color: #4f3dd0;
+      padding: 0.15em 0.4em;
+      border-radius: 0.5rem;
+      font-size: 0.98em;
+    }
+    pre {
+      background: #111827;
+      color: #e5e7eb;
+      padding: 1rem 1.25rem;
+      border-radius: 0.85rem;
+      overflow: auto;
+      margin: 0.75rem 0 1rem;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    .note {
+      background: linear-gradient(
+        180deg,
+        rgba(107, 78, 255, 0.08) 0%,
+        rgba(107, 78, 255, 0.05) 100%
+      );
+      border: 1px solid rgba(107, 78, 255, 0.25);
+      border-radius: 0.85rem;
+      padding: 0.85rem 1rem;
+      color: #312e81;
+      margin: 0.75rem 0 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      overflow: hidden;
+    }
+    th,
+    td {
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #fafbfc;
+      font-size: 0.95rem;
+    }
+    tbody tr:nth-child(odd) {
+      background: #ffffff;
+    }
+    tbody tr:nth-child(even) {
+      background: #fcfcff;
+    }
+    footer {
+      padding: 1.5rem 1.25rem 2.5rem;
+      text-align: center;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      background: #ffffff;
+    }
+    @media (max-width: 960px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+      nav {
+        position: static;
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AJS Builder</h1>
+    <p>
+      A lightweight, dependency-free visual page builder for WordPress. Design
+      pages with drag &amp; drop sections, columns, and modules; create
+      headers, footers, and reusable section templates; manage global styles
+      and export/import layouts as JSON.
+    </p>
+  </header>
+
+  <div class="container">
+    <nav>
+      <h2>Table of Contents</h2>
+      <a href="#overview">Overview</a>
+      <a href="#install">Installation</a>
+      <a href="#getting-started">Getting Started</a>
+      <a href="#editor">Builder Editor</a>
+      <a href="#modules">Modules</a>
+      <a href="#templates">Templates</a>
+      <a href="#sections">Sections (Reusable Blocks)</a>
+      <a href="#headers-footers">Headers &amp; Footers</a>
+      <a href="#layouts">Page Layouts (Canvas vs Theme)</a>
+      <a href="#settings">Settings</a>
+      <a href="#export-import">Export &amp; Import</a>
+      <a href="#frontend">Frontend Behavior</a>
+      <a href="#hooks-filters">Hooks &amp; Filters</a>
+      <a href="#shortcuts">Shortcuts &amp; Tips</a>
+      <a href="#support">Support &amp; Credits</a>
+    </nav>
+
+    <main>
+      <section id="overview">
+        <h2>1. Overview</h2>
+        <p>
+          AJS Builder is a modular, self-contained builder
+          for WordPress. It stores documents as structured JSON, renders via a
+          dedicated PHP renderer, and provides a live editor in the WordPress
+          admin with an iframe preview.
+        </p>
+        <ul>
+          <li><strong>Drag &amp; drop</strong> sections, columns, and widgets</li>
+          <li><strong>Responsive editing</strong> with per-device (desktop/tablet/mobile) controls</li>
+          <li><strong>Headers &amp; Footers</strong> with display conditions (entire site, pages, posts, archives, WooCommerce, specific pages)</li>
+          <li><strong>Reusable Section Templates</strong> (insert/export/import)</li>
+          <li><strong>Global styling</strong> (colors, typography, buttons, presets)</li>
+          <li><strong>JSON Export/Import</strong> for templates and sections</li>
+        </ul>
+      </section>
+
+      <section id="install">
+        <h2>2. Installation</h2>
+        <ol>
+          <li>Download/upload the <code>ajs-builder</code> plugin folder to <code>/wp-content/plugins/</code>.</li>
+          <li>Activate <em>AJS Builder</em> from <strong>Plugins</strong> &gt; <strong>Installed Plugins</strong>.</li>
+          <li>Go to <strong>AJS Builder</strong> &gt; <strong>Settings</strong> to choose enabled post types and modules.</li>
+        </ol>
+        <div class="note">
+          Requires PHP 7.4+ and WordPress 6.0+. WooCommerce features appear
+          automatically if WooCommerce is active.
+        </div>
+      </section>
+
+      <section id="getting-started">
+        <h2>3. Getting Started</h2>
+        <h3>Create a builder page</h3>
+        <ol>
+          <li>Navigate to <strong>Pages</strong> &gt; <strong>Add New</strong> (or <strong>Posts</strong> if enabled).</li>
+          <li>Click <strong>Edit with Builder</strong> in the Publish metabox or the admin bar/row action.</li>
+          <li>Add a <strong>Section</strong>, choose a column layout, then drag modules from the <strong>Modules</strong> panel.</li>
+          <li>Hover the canvas to reveal the <strong>Section</strong>, <strong>Column</strong>, and <strong>Row</strong> toolbars, or use the <strong>Structure</strong> panel for nested elements.</li>
+          <li><strong>Save</strong> in the top bar. Publish the page as usual.</li>
+        </ol>
+      </section>
+
+      <section id="editor">
+        <h2>4. Builder Editor</h2>
+        <p>The editor screen includes a top bar, left <strong>Modules/Settings</strong> panel, center <strong>Canvas</strong> (iframe preview), and overlays for selection/drag.</p>
+        <table>
+          <thead><tr><th>Control</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Desktop/Tablet/Mobile</strong></td><td>Switch responsive editing context</td></tr>
+            <tr><td><strong>Layout</strong> (pages only)</td><td>Choose <em>Theme header &amp; footer</em> or <em>Canvas (blank)</em></td></tr>
+            <tr><td><strong>Structure</strong> (list icon)</td><td>Tree view of sections/columns/widgets; reorder/select; <strong>Save section as template</strong> (star icon) on section rows</td></tr>
+            <tr><td><strong>Templates</strong> (grid icon)</td><td>Library of reusable section templates (Insert/Export/Delete/Import JSON)</td></tr>
+            <tr><td><strong>Preview</strong> (eye)</td><td>Open the front-end preview in a new tab</td></tr>
+            <tr><td><strong>Save</strong></td><td>Persist changes (autosave-like via explicit Save)</td></tr>
+          </tbody>
+        </table>
+        <div class="note">
+          When editing a template (header/footer/section), the <strong>Templates</strong> panel and the "Save as template" star are hidden; templates are managed via their dedicated admin screens or the library.
+        </div>
+        <h3>On-canvas editing</h3>
+        <p>Hovering an element on the canvas reveals a contextual toolbar, so you can edit structure without leaving the preview.</p>
+        <table>
+          <thead><tr><th>Toolbar</th><th>Where</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Section</strong></td><td>Top-left of each section</td><td>Edit (gear), Duplicate, Delete, <strong>Add Column</strong></td></tr>
+            <tr><td><strong>Column</strong></td><td>Top-right of each column</td><td>Move left/right, Edit, Duplicate, Delete</td></tr>
+            <tr><td><strong>Row</strong></td><td>Top-left inside a <strong>Row</strong> module</td><td>Edit, Duplicate, Delete, <strong>Add Column</strong> (adds a column to that Row)</td></tr>
+          </tbody>
+        </table>
+        <p>
+          A small <strong>+</strong> at the bottom of each section inserts a section after it. The <strong>Modules</strong> panel
+          <strong>Add Section</strong> button works the same way: if the page already has a section, the new content reuses it
+          (and its first column) instead of stacking duplicate sections. Existing content, settings, and responsive values are preserved.
+        </p>
+      </section>
+
+      <section id="modules">
+        <h2>5. Modules</h2>
+        <p>Modules are organized into groups (Layout, Content, Blog, WooCommerce, Media, Header/Footer, WordPress Widgets, Forms). You can enable/disable modules under <strong>AJS Builder</strong> &gt; <strong>Settings</strong> &gt; <strong>Available modules</strong>.</p>
+        <table>
+          <thead><tr><th>Group</th><th>Key Modules</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Layout</strong></td><td>Heading, Text Editor, Image, Button, Divider, Spacer, Icon, HTML, Logo, Row</td></tr>
+            <tr><td><strong>Content</strong></td><td>Icon Box, Image Box, Icon List, Counter, Testimonial, Call to Action, Accordion, Tabs, Progress Bar, Social Icons</td></tr>
+            <tr><td><strong>Blog</strong></td><td>Posts, Loop Carousel, Author Box</td></tr>
+            <tr><td><strong>WooCommerce</strong></td><td>Products, Products Carousel, Product Category Tabs, Featured Category</td></tr>
+            <tr><td><strong>Media</strong></td><td>Gallery, Video, Image Slider, Google Map</td></tr>
+            <tr><td><strong>Header/Footer</strong></td><td>Navigation, Search, Cart, My Account, Compare</td></tr>
+            <tr><td><strong>WordPress Widgets</strong></td><td>Archives, Calendar, Categories, Pages, Meta, Recent Posts, Recent Comments, Tag Cloud, RSS</td></tr>
+            <tr><td><strong>Forms</strong></td><td>Contact Form 7</td></tr>
+          </tbody>
+        </table>
+        <p>
+          The <strong>Row</strong> module is a layout container: drop it into a column to split that area into 1&ndash;6
+          of its own columns, each holding further modules. Rows expose their own <em>Columns</em> count,
+          gap (per device), stacking, and background/padding controls, and show a dedicated on-canvas toolbar.
+        </p>
+      </section>
+
+      <section id="templates">
+        <h2>6. Templates</h2>
+        <p>
+          The <strong>Templates</strong> panel (editor toolbar, grid icon) contains <strong>reusable section templates</strong>. Each saved template is a <code>ajs_template</code> post of type <code>section</code>.
+        </p>
+        <h3>Save a section as a template</h3>
+        <ol>
+          <li>Edit a regular <strong>page/post</strong> in the builder (not a template).</li>
+          <li>Open <strong>Structure</strong> (list icon).</li>
+          <li>Hover a section row → click the <strong>star</strong> icon ("Save as template").</li>
+          <li>Enter a name and confirm. It appears in the <strong>Templates</strong> panel.</li>
+        </ol>
+        <h3>Use, export, import (editor)</h3>
+        <ul>
+          <li><strong>Insert</strong> — adds the template's sections to the current page (IDs are re-assigned to avoid collisions).</li>
+          <li><strong>Export</strong> — downloads the template as a pretty-printed <code>.json</code> file (includes title, type, layout, document).</li>
+          <li><strong>Import JSON…</strong> — uploads a template export and <strong>saves it as a new section template</strong> in the library.</li>
+          <li><strong>Delete</strong> — removes the saved template.</li>
+        </ul>
+      </section>
+
+      <section id="sections">
+        <h2>7. Sections (Reusable Blocks)</h2>
+        <p>Sections are reusable blocks you can manage centrally and insert anywhere.</p>
+        <h3>Admin management</h3>
+        <ol>
+          <li>Go to <strong>AJS Builder</strong> &gt; <strong>Sections</strong>.</li>
+          <li><strong>Create &amp; design</strong> — opens the builder on a new section template.</li>
+          <li><strong>Edit with Builder</strong>, <strong>Export</strong>, <strong>Delete</strong> per row.</li>
+          <li><strong>Import a section</strong> — upload a previously exported <code>.json</code>.</li>
+        </ol>
+        <div class="note">
+          A section template's <em>Display on/conditions</em> don't apply (it's a reusable block). Use the <strong>Templates</strong> panel in the editor to insert sections into pages.
+        </div>
+      </section>
+
+      <section id="headers-footers">
+        <h2>8. Headers &amp; Footers</h2>
+        <p>Design custom headers/footers and control where they appear. The plugin swaps theme header/footer via <code>get_header()</code>/<code>get_footer()</code> and also supports block themes via <code>render_block_core/template-part</code>.</p>
+        <h3>Create</h3>
+        <ol>
+          <li><strong>AJS Builder</strong> &gt; <strong>Headers &amp; Footers</strong> &gt; <strong>Create &amp; design</strong>.</li>
+          <li>Choose <strong>Type</strong>: <em>Header</em> or <em>Footer</em>, set <strong>Display on</strong>, give it a name.</li>
+          <li>Design in the builder (canvas layout is recommended for full control).</li>
+          <li><strong>Save</strong>. Status shows <strong>Enabled/Disabled</strong> per template.</li>
+        </ol>
+        <h3>Display conditions</h3>
+        <table>
+          <thead><tr><th>Scope</th><th>Applies to</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Entire website</strong></td><td>All front-end views</td></tr>
+            <tr><td><strong>Front page</strong></td><td>Homepage (page on front)</td></tr>
+            <tr><td><strong>All pages</strong></td><td>Any <code>page</code> singular</td></tr>
+            <tr><td><strong>All posts</strong></td><td>Any <code>post</code> singular</td></tr>
+            <tr><td><strong>All archives</strong></td><td>Archives/home (excludes Woo shop when detected)</td></tr>
+            <tr><td><strong>Shop &amp; product archives</strong></td><td>WooCommerce shop, product taxonomies (when active)</td></tr>
+            <tr><td><strong>Single product pages</strong></td><td>Single <code>product</code> (when active)</td></tr>
+            <tr><td><strong>Specific pages…</strong></td><td>Selected pages/posts/products</td></tr>
+          </tbody>
+        </table>
+        <p>More specific rules win. A template with no renderable content is skipped.</p>
+        <h3>Header options</h3>
+        <ul>
+          <li><strong>Sticky</strong> — pins header to top while scrolling (<code>data-ajs-sticky="1"</code> + frontend CSS).</li>
+          <li><strong>CSS class</strong> — extra classes added to the wrapper (<code>.ajs-custom-template</code>).</li>
+          <li><strong>Enabled</strong> — toggle per template.</li>
+        </ul>
+      </section>
+
+      <section id="layouts">
+        <h2>9. Page Layouts (Canvas vs Theme)</h2>
+        <p>For regular pages (non-template), the top bar <strong>Layout</strong> selector controls the wrapper:</p>
+        <ul>
+          <li><strong>Theme header &amp; footer</strong> — render builder content inside the theme layout (uses <code>templates/builder.php</code>).</li>
+          <li><strong>Canvas (blank)</strong> — render a minimal full-width canvas with only builder content, no theme header/footer (<code>templates/builder-canvas.php</code>).</li>
+        </ul>
+        <p>Header/footer/section templates themselves always render on a canvas context.</p>
+      </section>
+
+      <section id="settings">
+        <h2>10. Settings</h2>
+        <p>Located at <strong>AJS Builder</strong> &gt; <strong>Settings</strong>.</p>
+        <h3>General</h3>
+        <ul>
+          <li><strong>Site container width</strong> — max width (px) for the "boxed" area used by builder sections. <code>0</code> uses theme default (1200px).</li>
+          <li><strong>Default content width</strong> — <em>Boxed</em> or <em>Full width</em> for new sections.</li>
+          <li><strong>Global custom CSS</strong> — output on every builder page/template.</li>
+        </ul>
+        <h3>Design Presets &amp; Global Styling</h3>
+        <p>Set global colors, typography (body/heading font families, sizes, weights, line heights), and link/button colors. You can <strong>Save current styling as a preset</strong> and reapply later.</p>
+        <h3>Post Types</h3>
+        <p>Choose which public post types can use the builder. The <strong>Edit with Builder</strong> action appears for selected types.</p>
+        <h3>Available Modules</h3>
+        <p>Toggle modules on/off globally. Existing content remains functional if a module is disabled later.</p>
+        <h3>About</h3>
+        <p><strong>AJS Builder</strong> &gt; <strong>About</strong> includes author/contact details and a contact form (uses <code>wp_mail()</code>).</p>
+      </section>
+
+      <section id="export-import">
+        <h2>11. Export &amp; Import</h2>
+        <table>
+          <thead><tr><th>Where</th><th>Export</th><th>Import</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Editor → Templates panel</strong></td><td>Per saved section template (downloads JSON)</td><td>Upload JSON → saves as a new <strong>section template</strong> in library</td></tr>
+            <tr><td><strong>Admin → Sections</strong></td><td>Per section template (downloads JSON)</td><td>Upload JSON → creates a new section template</td></tr>
+            <tr><td><strong>Admin → Headers &amp; Footers</strong></td><td>Per header/footer/section template (downloads JSON)</td><td>Upload JSON → creates a new template (any type in export)</td></tr>
+          </tbody>
+        </table>
+        <h3>JSON structure (example fields)</h3>
+        <pre>{
+  "type": "ajs-builder-template",
+  "version": "1.11.1",
+  "title": "My Section",
+  "template_type": "section",
+  "sticky": false,
+  "classes": "",
+  "enabled": true,
+  "conditions": { "display": "entire_site", "ids": [] },
+  "layout": "canvas",
+  "document": {
+    "version": "1.11.1",
+    "sections": [ { "id": "...", "settings": { ... }, "columns": [ ... ] } ]
+  }
+}</pre>
+      </section>
+
+      <section id="frontend">
+        <h2>12. Frontend Behavior</h2>
+        <h3>Rendering</h3>
+        <ul>
+          <li><strong>Builder pages</strong>: template include loads <code>templates/builder.php</code> (theme layout) or <code>builder-canvas.php</code> (canvas) depending on page layout.</li>
+          <li><strong>Editor preview</strong>: append <code>?ajs_builder=preview</code> to the permalink to preview while editing.</li>
+          <li><strong>Headers/Footers</strong>: auto-swapped on front end; block themes supported via <code>render_block_core/template-part</code>.</li>
+          <li><strong>Styles</strong>: builder CSS/JS enqueued when viewing builder content or preview; global CSS injected inline.</li>
+        </ul>
+        <h3>Body classes</h3>
+        <p>When builder is active/previewing, <code>ajs-builder-active</code> (and related) classes may be added to <code>&lt;body&gt;</code>.</p>
+      </section>
+
+      <section id="hooks-filters">
+        <h2>13. Hooks &amp; Filters</h2>
+        <h3>Templates</h3>
+        <pre>apply_filters( 'ajs_builder_auto_header_footer', true )</pre>
+        <p>Disable automatic header/footer swap (return <code>false</code>).</p>
+        <h3>Widgets</h3>
+        <pre>apply_filters( 'ajs_builder_widgets', $defs )</pre>
+        <p>Modify registered widget definitions.</p>
+        <h3>Frontend template</h3>
+        <pre>apply_filters( 'ajs_builder_render_frontend', true, $template )</pre>
+        <p>Prevent plugin from supplying frontend template (let theme handle).</p>
+        <pre>apply_filters( 'ajs_builder_template', $path, $layout, $post_id )</pre>
+        <p>(If present in theme integration) override the template file used.</p>
+        <h3>Post types</h3>
+        <pre>apply_filters( 'ajs_builder_post_types', $types )</pre>
+        <p>Filter which post types can use the builder.</p>
+      </section>
+
+      <section id="shortcuts-tips">
+        <h2>14. Shortcuts &amp; Tips</h2>
+        <ul>
+          <li><strong>Structure panel</strong> is fastest for selecting nested elements and saving a section.</li>
+          <li><strong>On-canvas toolbars</strong> (Section, Column, Row) let you duplicate, delete, and add columns directly in the preview — no need to open the Structure panel.</li>
+          <li><strong>Row modules</strong> nest their own columns; use the Row toolbar's <strong>Add Column</strong> to split a Row further.</li>
+          <li><strong>Responsive tabs</strong> (desktop/tablet/mobile) in controls — values not set on a smaller device inherit from the larger breakpoint above.</li>
+          <li><strong>Canvas layout</strong> gives you a true blank slate for landing pages or custom headers/footers.</li>
+          <li><strong>Export small sections</strong> as JSON to share between sites/staging.</li>
+          <li><strong>Presets</strong> are great for maintaining brand consistency across pages.</li>
+        </ul>
+      </section>
+
+      <section id="support">
+        <h2>15. Support &amp; Credits</h2>
+        <p>
+          Author: <strong>Atish Bachhar</strong> —
+          <a href="https://atish.co.in" target="_blank" rel="noopener">atish.co.in</a>
+        </p>
+        <p>
+          Plugin URI: <code>https://example.com/ajs-builder</code> ·
+          License: <a href="https://www.gnu.org/licenses/gpl-2.0.html" target="_blank" rel="noopener">GPL-2.0-or-later</a>
+        </p>
+        <p>
+          Found an issue? Report it on the
+          <a href="https://github.com/anomalyco/opencode/issues" target="_blank" rel="noopener">opencode feedback tracker</a>
+          as noted in the environment instructions, or contact via the <strong>About</strong> page in the plugin.
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <p>AJS Builder &mdash; Documentation. Generated for v1.11.6.</p>
+  </footer>
+  <script>
+    const navLinks = document.querySelectorAll("nav a");
+    const sections = Array.from(document.querySelectorAll("main section"));
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            navLinks.forEach((link) =>
+              link.classList.remove("active")
+            );
+            const id = entry.target.getAttribute("id");
+            const active = document.querySelector(`nav a[href="#${id}"]`);
+            if (active) active.classList.add("active");
+          }
+        });
+      },
+      { rootMargin: "-40% 0px -50% 0px", threshold: 0.1 }
+    );
+    sections.forEach((s) => observer.observe(s));
+    navLinks.forEach((link) =>
+      link.addEventListener("click", () => {
+        navLinks.forEach((l) => l.classList.remove("active"));
+        link.classList.add("active");
+      })
+    );
+  </script>
+</body>
+</html>
